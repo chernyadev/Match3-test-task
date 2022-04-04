@@ -6,5 +6,9 @@ namespace RG.Match3.Settings {
         [SerializeField]
         private int matchCount = 3;
         public int MatchCount => matchCount;
+
+        [SerializeField]
+        private Vector2Int boardSize = new Vector2Int(10, 10);
+        public Vector2Int BoardSize => boardSize;
     }
 }

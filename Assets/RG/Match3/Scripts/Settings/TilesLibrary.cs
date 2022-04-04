@@ -1,15 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
+using RG.Match3.Data;
 using UnityEngine;
 
 namespace RG.Match3.Settings {
     [CreateAssetMenu(menuName = "Create Tiles Library", fileName = "TilesLibrary", order = 0)]
     public class TilesLibrary : ScriptableObject {
-        [Space]
         [SerializeField]
-        private Tile[] tiles;
+        private TileData[] tiles;
 
-        private Dictionary<int, Tile> tilesDict = new Dictionary<int, Tile>();
+        [SerializeField]
+        private TileAnimationData sharedAnimationData;
+
+        private Dictionary<int, TileData> tilesDict = new Dictionary<int, TileData>();
 
         #region Unity
 
@@ -24,23 +27,31 @@ namespace RG.Match3.Settings {
         #endregion
 
         public Tile GetRandomTile() {
-            return tiles[Random.Range(0, tiles.Length)];
+            var data = tiles[Random.Range(0, tiles.Length)];
+            return BuildTile(data);
         }
 
         public Tile GetRandomTileExcludingIds(int[] excludeIds) {
-            var filteredTiles = new Dictionary<int, Tile>(tilesDict);
+            var filteredTiles = new Dictionary<int, TileData>(tilesDict);
 
             for (var i = 0; i < excludeIds.Length; i++) {
                 filteredTiles.Remove(excludeIds[i]);
             }
 
-            return filteredTiles.Values.ToArray()[Random.Range(0, filteredTiles.Count)];
+            var data = filteredTiles.Values.ToArray()[Random.Range(0, filteredTiles.Count)];
+            return BuildTile(data);
+        }
+
+        private Tile BuildTile(TileData tileData) {
+            var tile = Instantiate(tileData.prefab).AddComponent<Tile>();
+            tile.Init(tileData, sharedAnimationData);
+            return tile;
         }
 
         private bool ValidateIds() {
             var ids = new HashSet<int>();
             for (var i = 0; i < tiles.Length; i++) {
-                var id = tiles[i].Id;
+                var id = tiles[i].id;
                 if (ids.Contains(id)) {
                     Debug.LogError($"Tile ID {id} is duplicated. Tiles must have unique IDs. Fix this!");
                     return false;
@@ -53,12 +64,12 @@ namespace RG.Match3.Settings {
             return true;
         }
 
-        private Dictionary<int, Tile> CreateTilesDictionary() {
-            var dict = new Dictionary<int, Tile>();
+        private Dictionary<int, TileData> CreateTilesDictionary() {
+            var dict = new Dictionary<int, TileData>();
 
             for (var i = 0; i < tiles.Length; i++) {
-                var tile = tiles[i];
-                dict[tile.Id] = tile;
+                var tileData = tiles[i];
+                dict[tileData.id] = tileData;
             }
 
             return dict;
