@@ -1,0 +1,16 @@
+{
+    "name": "RG.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6a2ea3c7a72fa994ea2f4c89f0830fa2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
