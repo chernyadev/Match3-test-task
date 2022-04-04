@@ -13,7 +13,20 @@ MonoBehaviour:
   m_Name: TilesLibrary
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 3038838192855374254, guid: 59e088146f42e4972a3592e98e22674c, type: 3}
-  - {fileID: -8961517240926835761, guid: 0b21e0b7fe6c5444eb834245eecf95a6, type: 3}
-  - {fileID: 2066380564049502396, guid: 0f42536aef36e4433bc4e1940c87b67c, type: 3}
-  - {fileID: -3812190383467824800, guid: 3b8cfe10c1e8d4280b4f3a7e5d11f48d, type: 3}
+  - id: 0
+    size: 1
+    prefab: {fileID: 117254, guid: 59e088146f42e4972a3592e98e22674c, type: 3}
+  - id: 1
+    size: 1
+    prefab: {fileID: 124168, guid: 0b21e0b7fe6c5444eb834245eecf95a6, type: 3}
+  - id: 2
+    size: 1
+    prefab: {fileID: 148072, guid: 0f42536aef36e4433bc4e1940c87b67c, type: 3}
+  - id: 3
+    size: 1
+    prefab: {fileID: 119720, guid: 3b8cfe10c1e8d4280b4f3a7e5d11f48d, type: 3}
+  sharedAnimationData:
+    removeDuration: 0.2
+    removeVibration: 10
+    removeElasticity: 0.1
+    moveDuration: 0.2
