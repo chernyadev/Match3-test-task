@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RG.Match3.Settings;
 using UnityEngine;
 
 namespace RG.Match3 {
     public class Board : MonoBehaviour {
         [SerializeField]
         private Vector2Int size;
-        [SerializeField]
-        private int matchCount = 3;
 
         [Space]
+        [Header("Configs")]
         [SerializeField]
-        private Tile[] tilesLibrary;
+        private GameSettings gameSettings;
+        [SerializeField]
+        private TilesLibrary tilesLibrary;
 
         private Tile[,] board;
 
@@ -22,20 +24,6 @@ namespace RG.Match3 {
 
         private void Start() {
             Fill();
-        }
-
-        private void OnValidate() {
-            var ids = new HashSet<int>();
-
-            for (var i = 0; i < tilesLibrary.Length; i++) {
-                var id = tilesLibrary[i].Id;
-                if (ids.Contains(id)) {
-                    Debug.LogError($"Tile ID {id} is duplicated. Tiles must have unique IDs. Fix this!");
-                }
-                else {
-                    ids.Add(id);
-                }
-            }
         }
 
         #endregion
@@ -111,7 +99,7 @@ namespace RG.Match3 {
                             sequence.Add(curTile);
                         }
                         else {
-                            if (sequence.Count >= matchCount) {
+                            if (sequence.Count >= gameSettings.MatchCount) {
                                 tilesToRemove.AddRange(sequence);
                             }
 
@@ -123,7 +111,7 @@ namespace RG.Match3 {
                         }
                     }
 
-                    if (sequence.Count >= matchCount) {
+                    if (sequence.Count >= gameSettings.MatchCount) {
                         tilesToRemove.AddRange(sequence);
                     }
                 }
@@ -138,7 +126,7 @@ namespace RG.Match3 {
 
         private void Fill() {
             board = new Tile[size.x, size.y];
-            
+
             var tilesRoot = new GameObject("TilesRoot").transform;
             tilesRoot.SetParent(transform);
             tilesRoot.localPosition = new Vector2(size.x, size.y) * -0.5f;
@@ -148,27 +136,23 @@ namespace RG.Match3 {
                 var repeatedTilesCount = 1;
 
                 for (var x = 0; x < size.x; x++) {
-                    var tileId = Random.Range(0, tilesLibrary.Length);
+                    var nextTile = repeatedTilesCount == gameSettings.MatchCount - 1
+                        ? tilesLibrary.GetRandomTileExcludingIds(new[] {prevTileId})
+                        : tilesLibrary.GetRandomTile();
 
-                    if (tileId == prevTileId) {
+                    if (nextTile.Id == prevTileId) {
                         repeatedTilesCount++;
                     }
                     else {
                         repeatedTilesCount = 1;
                     }
 
-                    if (repeatedTilesCount >= matchCount) {
-                        var availableIds = Enumerable.Range(0, tilesLibrary.Length).ToList();
-                        availableIds.Remove(tileId);
-                        tileId = availableIds[Random.Range(0, availableIds.Count)];
-                    }
-
-                    var tile = Instantiate(tilesLibrary[tileId], tilesRoot);
+                    var tile = Instantiate(nextTile, tilesRoot);
                     tile.onTileClicked += OnTileClickedHandler;
                     tile.BoardCoords = new Vector2Int(x, y);
                     board[x, y] = tile;
 
-                    prevTileId = tileId;
+                    prevTileId = nextTile.Id;
                 }
             }
         }
