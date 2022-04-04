@@ -8,7 +8,7 @@ namespace RG.Match3 {
     public class Board : MonoBehaviour {
         [SerializeField]
         private Transform boardRoot;
-        
+
         [Space]
         [Header("Configs")]
         [SerializeField]
@@ -18,7 +18,7 @@ namespace RG.Match3 {
 
         private Tile[,] board;
         private bool isHandlingTileClick;
-        
+
         private Vector2Int Size => gameSettings.BoardSize;
 
         #region Unity
@@ -63,11 +63,11 @@ namespace RG.Match3 {
                         continue;
                     }
 
-                    var offset = 0;
+                    var offset = 1;
 
-                    do {
+                    while (y - offset >= 0 && board[x, y - offset] == null) {
                         offset++;
-                    } while (y - offset >= 0 && board[x, y - offset] == null);
+                    }
 
                     if (board[x, y - offset + 1] != null) continue;
 
