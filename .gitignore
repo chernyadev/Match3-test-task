@@ -37,3 +37,6 @@ sysinfo.txt
 
 # Blender backup files, e.g. .blend1, .blend2
 *.blend[0-9]*
+
+# Exclude rider idea data
+.idea
