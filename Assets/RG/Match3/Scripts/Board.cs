@@ -83,46 +83,44 @@ namespace RG.Match3 {
         }
 
         private int CheckMatches() {
-            while (true) {
-                var tilesToRemove = new List<Tile>();
+            var tilesToRemove = new List<Tile>();
 
-                for (var y = 0; y < Size.y; y++) {
-                    var sequence = new HashSet<Tile>();
-                    for (var x = 0; x < Size.x; x++) {
-                        var curTile = board[x, y];
+            for (var y = 0; y < Size.y; y++) {
+                var sequence = new HashSet<Tile>();
+                for (var x = 0; x < Size.x; x++) {
+                    var curTile = board[x, y];
 
-                        if (curTile != null && sequence.Count == 0) {
-                            sequence.Add(curTile);
-                            continue;
-                        }
-
-                        if (curTile != null && curTile.Id == sequence.Last().Id) {
-                            sequence.Add(curTile);
-                        }
-                        else {
-                            if (sequence.Count >= gameSettings.MatchCount) {
-                                tilesToRemove.AddRange(sequence);
-                            }
-
-                            sequence = new HashSet<Tile>();
-
-                            if (curTile != null) {
-                                sequence.Add(curTile);
-                            }
-                        }
+                    if (curTile != null && sequence.Count == 0) {
+                        sequence.Add(curTile);
+                        continue;
                     }
 
-                    if (sequence.Count >= gameSettings.MatchCount) {
-                        tilesToRemove.AddRange(sequence);
+                    if (curTile != null && curTile.Id == sequence.Last().Id) {
+                        sequence.Add(curTile);
+                    }
+                    else {
+                        if (sequence.Count >= gameSettings.MatchCount) {
+                            tilesToRemove.AddRange(sequence);
+                        }
+
+                        sequence = new HashSet<Tile>();
+
+                        if (curTile != null) {
+                            sequence.Add(curTile);
+                        }
                     }
                 }
 
-                for (var i = 0; i < tilesToRemove.Count; i++) {
-                    RemoveTile(tilesToRemove[i]);
+                if (sequence.Count >= gameSettings.MatchCount) {
+                    tilesToRemove.AddRange(sequence);
                 }
-
-                return tilesToRemove.Count;
             }
+
+            for (var i = 0; i < tilesToRemove.Count; i++) {
+                RemoveTile(tilesToRemove[i]);
+            }
+
+            return tilesToRemove.Count;
         }
 
         private void Fill() {
